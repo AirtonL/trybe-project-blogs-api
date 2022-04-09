@@ -10,6 +10,10 @@ router.get('/',
   middleware.checkToken,
   UserControllers.getAll);
 
+router.get('/:id',
+  middleware.checkToken,
+  UserControllers.getById);
+
 router.post('/',
   middleware.checkEmail,
   middleware.checkPassword,

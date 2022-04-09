@@ -3,9 +3,15 @@ const { checkedAllData } = require('../utils');
 
 const getAll = async () => {
   try {
-    const result = await User.findAll();
+    return await User.findAll();
+  } catch (error) {
+    console.error(error.message);
+  }
+};
 
-    return result;
+const getById = async (id) => {
+  try {
+    return await User.findByPk(id);
   } catch (error) {
     console.error(error.message);
   }
@@ -36,4 +42,5 @@ const create = async (user) => {
 module.exports = {
   create,
   getAll,
+  getById,
 };
