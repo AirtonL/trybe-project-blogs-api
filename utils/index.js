@@ -22,12 +22,11 @@ const checkedEmail = (email) => {
   };
 
   const existField = (obj) => {
-    console.log(obj);
     const field = Object.keys(obj);
-    console.log(field);
-    console.log(!obj[field]);
   
-    if (!obj[field]) return { isExist: true, message: `"${field}" is required` };
+    if (!obj[field] && obj[field] !== '') {
+      return { isExist: true, message: `"${field}" is required` };
+    }
   
     return { isExist: false };
   };
@@ -51,9 +50,6 @@ const checkedEmail = (email) => {
   };
 
 module.exports = {
-    checkedEmail,
-    checkedPassword,
-    checkedName,
     existField,
     checkedAllData,
 };
