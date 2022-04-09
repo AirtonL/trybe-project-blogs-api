@@ -41,8 +41,7 @@ const checkToken = async (req, res, next) => {
   if (!token) return res.status(401).json({ message: 'Token not found' });
   try {
     const { data } = jwt.verify(token, SECRET);
-    // console.log('teste:', teste);
-    console.log('cheguei');
+
     const [user] = await User.findAll({
       where: { email: data },
     });
