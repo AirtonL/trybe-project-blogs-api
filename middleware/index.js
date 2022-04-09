@@ -56,9 +56,18 @@ const checkToken = async (req, res, next) => {
   }
 };
 
+const checkName = (req, res, next) => {
+  const { name } = req.body;
+  const { isExist, message } = existField({ name });
+
+  if (isExist) return res.status(400).json({ message });
+  next();
+};
+
 module.exports = {
   checkEmail,
   checkPassword,
   checkBlankField,
   checkToken,
+  checkName,
 };
