@@ -1,6 +1,16 @@
 const { User } = require('../models');
 const { checkedAllData } = require('../utils');
 
+const getAll = async () => {
+  try {
+    const result = await User.findAll();
+
+    return result;
+  } catch (error) {
+    console.error(error.message);
+  }
+};
+
 const create = async (user) => {
   try {
     const findMail = await User.findAll({
@@ -25,4 +35,5 @@ const create = async (user) => {
 
 module.exports = {
   create,
+  getAll,
 };

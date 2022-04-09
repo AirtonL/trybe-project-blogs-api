@@ -6,6 +6,10 @@ const middleware = require('../middleware');
 
 const router = Router();
 
+router.get('/',
+  middleware.checkToken,
+  UserControllers.getAll);
+
 router.post('/',
   middleware.checkEmail,
   middleware.checkPassword,

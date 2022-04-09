@@ -1,4 +1,9 @@
+require('dotenv/config');
+const jwt = require('jsonwebtoken');
 const { existField } = require('../utils');
+const { User } = require('../models');
+
+const SECRET = process.env.JWT_SECRET;
 
 const checkEmail = (req, res, next) => {
   const { email } = req.body;
@@ -31,8 +36,29 @@ const checkBlankField = (req, res, next) => {
   next();
 };
 
+const checkToken = async (req, res, next) => {
+  const { authorization: token } = req.headers;
+  if (!token) return res.status(401).json({ message: 'Token not found' });
+  try {
+    const { data } = jwt.verify(token, SECRET);
+    // console.log('teste:', teste);
+    console.log('cheguei');
+    const [user] = await User.findAll({
+      where: { email: data },
+    });
+    if (!user) return res.status(401).json({ message: 'Expired or invalid token' });
+
+    req.user = user;
+    next();
+  } catch (e) {
+    console.error(e.message);
+    return res.status(401).json({ message: 'Expired or invalid token' });
+  }
+};
+
 module.exports = {
   checkEmail,
   checkPassword,
   checkBlankField,
+  checkToken,
 };
