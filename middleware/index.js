@@ -2,6 +2,7 @@ require('dotenv/config');
 const jwt = require('jsonwebtoken');
 const { existField } = require('../utils');
 const { User } = require('../models');
+const CategoryServices = require('../services/CategoryServices');
 
 const SECRET = process.env.JWT_SECRET;
 
@@ -63,10 +64,58 @@ const checkName = (req, res, next) => {
   next();
 };
 
+const checkTitle = (req, res, next) => {
+  const { title } = req.body;
+  const { isExist, message } = existField({ title });
+
+  if (isExist) return res.status(400).json({ message });
+  next();
+};
+
+const checkCategoryIds = (req, res, next) => {
+  const { categoryIds } = req.body;
+  const { isExist, message } = existField({ categoryIds });
+
+  if (isExist) return res.status(400).json({ message });
+  next();
+};
+
+const checkContent = (req, res, next) => {
+  const { content } = req.body;
+  const { isExist, message } = existField({ content });
+
+  if (isExist) return res.status(400).json({ message });
+  next();
+};
+
+const verifyValues = async (categoryIds, ids) => Promise.all(ids)
+  .then((id) => {
+    const arr = id.map((i) => (i && i.dataValues.id));
+    console.log('promise:', arr, id);
+  
+    return !categoryIds.every((idCategory) => arr.includes(idCategory));
+  });
+
+const checkCategories = async (req, res, next) => {
+  const { categoryIds } = req.body;
+  // console.log('teste:', categoryIds);
+  const ids = categoryIds.map((i) => CategoryServices.getCategoryById(i));
+  // console.log('teste2:', ids);
+
+  const notValueId = await verifyValues(categoryIds, ids);
+  if (notValueId) return res.status(400).json({ message: '"categoryIds" not found' });
+
+  next();
+};
+
 module.exports = {
   checkEmail,
   checkPassword,
   checkBlankField,
   checkToken,
   checkName,
+  checkTitle,
+  checkCategoryIds,
+  checkContent,
+  checkCategories,
 };
