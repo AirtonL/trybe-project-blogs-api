@@ -6,6 +6,10 @@ const PostController = require('../controllers/BlogsPostControllers');
 
 const router = Router();
 
+router.get('/',
+  middleware.checkToken,
+  PostController.getAll);
+
 router.post('/',
   middleware.checkToken,
   middleware.checkTitle,

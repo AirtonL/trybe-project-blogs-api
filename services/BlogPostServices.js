@@ -1,4 +1,25 @@
-const { BlogPosts } = require('../models');
+const { BlogPosts, User, Category } = require('../models');
+
+const getAll = async () => {
+  try {
+    return await BlogPosts.findAll({
+      include: [
+        {
+          model: User,
+          as: 'user',
+          attributes: { exclude: ['password'] },
+        },
+        {
+        model: Category,
+        as: 'categories',
+        through: { attributes: [] },
+      },
+      ],
+    });
+  } catch (e) {
+    console.error(e.message);
+  }
+};
 
 const create = async (post) => {
   try {
@@ -10,4 +31,5 @@ const create = async (post) => {
 
 module.exports = {
   create,
+  getAll,
 };

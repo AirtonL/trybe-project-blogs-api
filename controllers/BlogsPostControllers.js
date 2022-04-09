@@ -1,5 +1,16 @@
 const BlogPostServices = require('../services/BlogPostServices');
 
+const getAll = async (_req, res) => {
+  try {
+    const result = await BlogPostServices.getAll();
+  
+    return res.status(200).json(result);
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
 const create = async (req, res) => {
   try {
     const { id } = req.user;
@@ -18,4 +29,5 @@ const create = async (req, res) => {
 
 module.exports = {
   create,
+  getAll,
 };
