@@ -19,4 +19,8 @@ router.post('/',
   middleware.checkPassword,
   UserControllers.createUser);
 
+router.delete('/me',
+  middleware.checkToken,
+  UserControllers.deleteUser);
+
 module.exports = router;
