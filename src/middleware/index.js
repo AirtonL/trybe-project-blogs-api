@@ -26,7 +26,7 @@ const checkPassword = (req, res, next) => {
 
 const checkBlankField = (req, res, next) => {
   const { email, password } = req.body;
-  console.log(email, password);
+
   const type = email ? 'password' : 'email';
   
   if (!(email.length) || !(password.length)) {
@@ -91,16 +91,14 @@ const checkContent = (req, res, next) => {
 const verifyValues = async (categoryIds, ids) => Promise.all(ids)
   .then((id) => {
     const arr = id.map((i) => (i && i.dataValues.id));
-    console.log('promise:', arr, id);
   
     return !categoryIds.every((idCategory) => arr.includes(idCategory));
   });
 
 const checkCategories = async (req, res, next) => {
   const { categoryIds } = req.body;
-  // console.log('teste:', categoryIds);
+
   const ids = categoryIds.map((i) => CategoryServices.getCategoryById(i));
-  // console.log('teste2:', ids);
 
   const notValueId = await verifyValues(categoryIds, ids);
   if (notValueId) return res.status(400).json({ message: '"categoryIds" not found' });

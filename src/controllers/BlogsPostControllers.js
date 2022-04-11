@@ -43,7 +43,6 @@ const update = async (req, res) => {
 
     return res.status(200).json(postUpdate);
   } catch (error) {
-    console.log('entrei');
     console.error(error.message);
     res.status(500).json(SERVER_ERROR);
   }
@@ -52,7 +51,6 @@ const update = async (req, res) => {
 const create = async (req, res) => {
   try {
     const { id } = req.user;
-    console.log(req.body);
 
     const newBlogPost = { ...req.body, userId: id, published: new Date(), updated: new Date() };
 
@@ -87,7 +85,6 @@ const search = async (req, res) => {
     const { q } = req.query;
 
     const result = await BlogPostServices.search(q);
-    console.log('results:', result);
 
     return res.status(200).json(result);
   } catch (error) {
