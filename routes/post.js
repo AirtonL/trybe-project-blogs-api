@@ -10,6 +10,10 @@ router.get('/',
   middleware.checkToken,
   PostController.getAll);
 
+router.get('/search',
+  middleware.checkToken,
+  PostController.search);
+
 router.get('/:id',
   middleware.checkToken,
   PostController.getById);
