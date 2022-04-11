@@ -12,7 +12,13 @@ router.get('/',
 
 router.get('/:id',
   middleware.checkToken,
-  PostController.getById);  
+  PostController.getById);
+
+router.put('/:id',
+  middleware.checkToken,
+  middleware.checkTitle,
+  middleware.checkContent,
+  PostController.update);
 
 router.post('/',
   middleware.checkToken,

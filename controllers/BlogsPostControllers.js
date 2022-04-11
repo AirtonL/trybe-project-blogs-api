@@ -25,6 +25,31 @@ const getById = async (req, res) => {
   }
 };
 
+const update = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { id: userId } = req.user;
+    const { title, content, categoryIds } = req.body;
+    console.log('entrei');
+
+    if (categoryIds) {
+      return res.status(400).json({ message: 'Categories cannot be edited' });
+    }
+
+    const result = await BlogPostServices.update(userId, id, title, content);
+
+    if (!result) return res.status(401).json({ message: 'Unauthorized user' });
+
+    const postUpdate = await BlogPostServices.getById(id);
+
+    return res.status(200).json(postUpdate);
+  } catch (error) {
+    console.log('entrei');
+    console.error(error.message);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
 const create = async (req, res) => {
   try {
     const { id } = req.user;
@@ -45,4 +70,5 @@ module.exports = {
   create,
   getAll,
   getById,
+  update,
 };

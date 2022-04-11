@@ -42,6 +42,15 @@ const getById = async (id) => {
   }
 };
 
+const update = async (userId, id, title, content) => {
+  const [resultPost] = await BlogPosts.update(
+    { title, content },
+    { where: { id, userId } },
+  );
+
+  return resultPost;
+};
+
 const create = async (post) => {
   try {
     return await BlogPosts.create(post);
@@ -54,4 +63,5 @@ module.exports = {
   create,
   getAll,
   getById,
+  update,
 };
