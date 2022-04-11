@@ -11,6 +11,20 @@ const getAll = async (_req, res) => {
   }
 };
 
+const getById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = await BlogPostServices.getById(id);
+
+    if (!result) return res.status(404).json({ message: 'Post does not exist' });
+
+    return res.status(200).json(result);
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
 const create = async (req, res) => {
   try {
     const { id } = req.user;
@@ -30,4 +44,5 @@ const create = async (req, res) => {
 module.exports = {
   create,
   getAll,
+  getById,
 };
