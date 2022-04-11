@@ -1,5 +1,7 @@
 const BlogPostServices = require('../services/BlogPostServices');
 
+const SERVER_ERROR = { message: 'Server error' };
+
 const getAll = async (_req, res) => {
   try {
     const result = await BlogPostServices.getAll();
@@ -7,7 +9,7 @@ const getAll = async (_req, res) => {
     return res.status(200).json(result);
   } catch (error) {
     console.error(error.message);
-    res.status(500).json({ message: 'Server error' });
+    res.status(500).json(SERVER_ERROR);
   }
 };
 
@@ -21,7 +23,7 @@ const getById = async (req, res) => {
     return res.status(200).json(result);
   } catch (error) {
     console.error(error.message);
-    res.status(500).json({ message: 'Server error' });
+    res.status(500).json(SERVER_ERROR);
   }
 };
 
@@ -30,11 +32,8 @@ const update = async (req, res) => {
     const { id } = req.params;
     const { id: userId } = req.user;
     const { title, content, categoryIds } = req.body;
-    console.log('entrei');
 
-    if (categoryIds) {
-      return res.status(400).json({ message: 'Categories cannot be edited' });
-    }
+    if (categoryIds) return res.status(400).json({ message: 'Categories cannot be edited' });
 
     const result = await BlogPostServices.update(userId, id, title, content);
 
@@ -46,7 +45,7 @@ const update = async (req, res) => {
   } catch (error) {
     console.log('entrei');
     console.error(error.message);
-    res.status(500).json({ message: 'Server error' });
+    res.status(500).json(SERVER_ERROR);
   }
 };
 
@@ -62,7 +61,24 @@ const create = async (req, res) => {
     return res.status(201).json(newPost);
   } catch (error) {
     console.error(error.message);
-    res.status(500).json({ message: 'Server error' });
+    res.status(500).json(SERVER_ERROR);
+  }
+};
+
+const deletePost = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { id: userId } = req.user;
+
+    const result = await BlogPostServices.deletePost(userId, id);
+
+    if (result.unauthorized) return res.status(401).json({ message: 'Unauthorized user' });
+    if (result.postNoExist) return res.status(404).json({ message: 'Post does not exist' });
+
+    return res.status(204).end();
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json(SERVER_ERROR);
   }
 };
 
@@ -71,4 +87,5 @@ module.exports = {
   getAll,
   getById,
   update,
+  deletePost,
 };

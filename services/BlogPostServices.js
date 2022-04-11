@@ -59,9 +59,24 @@ const create = async (post) => {
   }
 };
 
+const deletePost = async (userId, id) => {
+  const postExist = await getById(id);
+
+  if (!postExist) return { postNoExist: true };
+
+  if (postExist.userId !== userId) return { unauthorized: true };
+
+  const resultPost = await BlogPosts.destroy({
+    where: { id, userId },
+  });
+
+  return resultPost;
+};
+
 module.exports = {
   create,
   getAll,
   getById,
   update,
+  deletePost,
 };

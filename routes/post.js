@@ -28,4 +28,8 @@ router.post('/',
   middleware.checkCategories,
   PostController.create);
 
+router.delete('/:id',
+  middleware.checkToken,
+  PostController.deletePost);
+
 module.exports = router;
