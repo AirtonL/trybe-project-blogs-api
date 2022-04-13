@@ -7,14 +7,30 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      title: { allowNull: false, type: Sequelize.STRING },
-      content: { allowNull: false,  type: Sequelize.TEXT },
-      published: { allowNull: false, type: Sequelize.DATE },
-      updated: { allowNull: false, type: Sequelize.DATE },
-      userId: { type: Sequelize.INTEGER,
+      title: {
+        allowNull: false,
+        type: Sequelize.STRING
+      },
+      content: {
+        allowNull: false, 
+        type: Sequelize.TEXT
+      },
+      published: {
+        allowNull: false,
+        type: Sequelize.DATE
+      },
+      updated: {
+        allowNull: false,
+        type: Sequelize.DATE
+      },
+      userId: {
+        type: Sequelize.INTEGER,
         allowNull: false,
         defaultValue: 1,
-        references: { model: 'Users', foreignKey: 'id' },
+        references: {
+          model: 'Users',
+          foreignKey: 'id'
+        },
       },
     });
   },
