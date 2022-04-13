@@ -3,6 +3,7 @@ require('dotenv/config');
 const express = require('express');
 
 const app = express();
+const error = require('./middleware/error');
 
 app.use(express.json());
 
@@ -18,5 +19,7 @@ app.use('/post', require('./routes/post'));
 app.get('/', (_request, response) => {
   response.send();
 });
+
+app.use(error);
 
 app.listen(3000, () => console.log('ouvindo porta 3000!'));

@@ -8,7 +8,7 @@ const getAll = async () => {
   }
 };
 
-const getCategoryById = async (id) => {
+const getById = async (id) => {
   try {
     return await Category.findByPk(id);
   } catch (error) {
@@ -27,5 +27,5 @@ const create = async (name) => {
 module.exports = {
   create,
   getAll,
-  getCategoryById,
+  getById,
 };

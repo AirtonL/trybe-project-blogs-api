@@ -4,6 +4,8 @@ const UserControllers = require('../controllers/UserControllers');
 
 const middleware = require('../middleware');
 
+const checkUser = require('../middleware/checkUser');
+
 const router = Router();
 
 router.get('/',
@@ -15,8 +17,7 @@ router.get('/:id',
   UserControllers.getById);
 
 router.post('/',
-  middleware.checkEmail,
-  middleware.checkPassword,
+  checkUser,
   UserControllers.createUser);
 
 router.delete('/me',

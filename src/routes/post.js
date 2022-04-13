@@ -4,6 +4,10 @@ const middleware = require('../middleware');
 
 const PostController = require('../controllers/BlogsPostControllers');
 
+const checkPostUpdate = require('../middleware/checkPostUpdate');
+
+const checkCreatePost = require('../middleware/checkCreatePost');
+
 const router = Router();
 
 router.get('/',
@@ -20,15 +24,12 @@ router.get('/:id',
 
 router.put('/:id',
   middleware.checkToken,
-  middleware.checkTitle,
-  middleware.checkContent,
+  checkPostUpdate,
   PostController.update);
 
 router.post('/',
   middleware.checkToken,
-  middleware.checkTitle,
-  middleware.checkCategoryIds,
-  middleware.checkContent,
+  checkCreatePost,
   middleware.checkCategories,
   PostController.create);
 

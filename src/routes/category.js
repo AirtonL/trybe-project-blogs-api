@@ -2,6 +2,8 @@ const { Router } = require('express');
 
 const middleware = require('../middleware');
 
+const checkCategory = require('../middleware/checkCategory');
+
 const Categorycontroller = require('../controllers/CategoryControllers');
 
 const router = Router();
@@ -12,7 +14,7 @@ router.get('/',
 
 router.post('/', 
   middleware.checkToken,
-  middleware.checkName,
+  checkCategory,
   Categorycontroller.create);
 
 module.exports = router;
