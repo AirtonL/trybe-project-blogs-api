@@ -7,7 +7,7 @@ const getAll = async (_req, res) => {
     return res.status(200).json(categories);
   } catch (error) {
     console.error(error.message);
-    res.status(500).json({ message: 'Server error' });
+    return res.status(500).json({ message: 'Server error' });
   }
 };
 
@@ -20,7 +20,7 @@ const create = async (req, res) => {
     return res.status(201).json({ newCategory, name });
   } catch (error) {
     console.error(error.message);
-    res.status(500).json({ message: 'Server error' });
+    return res.status(500).json({ message: 'Server error' });
   }
 };
 

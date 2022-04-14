@@ -1,5 +1,4 @@
 const { User } = require('../models');
-const { checkedAllData } = require('../utils');
 
 const getAll = async () => {
   try {
@@ -11,7 +10,11 @@ const getAll = async () => {
 
 const getById = async (id) => {
   try {
-    return await User.findByPk(id);
+    const user = await User.findByPk(id);
+
+    if (!user) return { message: 'User does not exist', userNotExist: true };
+
+    return { user };
   } catch (error) {
     console.error(error.message);
   }
@@ -19,17 +22,13 @@ const getById = async (id) => {
 
 const create = async (user) => {
   try {
-    const findMail = await User.findAll({
+    const findMail = await User.findOne({
       where: {
         email: user.email,
       },
     });
 
-    if (findMail.length > 0) return { message: 'User already registered', emailExist: true };
-    
-    const validData = await checkedAllData(user);
-
-    if (validData) return validData;
+    if (findMail) return { message: 'User already registered', alreadExist: true };
 
     const result = await User.create(user);
 

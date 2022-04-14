@@ -9,21 +9,21 @@ const getAll = async (_req, res) => {
     return res.status(200).json(result);
   } catch (error) {
     console.error(error.message);
-    res.status(500).json(SERVER_ERROR);
+    return res.status(500).json(SERVER_ERROR);
   }
 };
 
 const getById = async (req, res) => {
   try {
     const { id } = req.params;
-    const result = await BlogPostServices.getById(id);
+    const { result, postNotExist, message } = await BlogPostServices.getById(id);
 
-    if (!result) return res.status(404).json({ message: 'Post does not exist' });
+    if (postNotExist) return res.status(404).json({ message });
 
     return res.status(200).json(result);
   } catch (error) {
     console.error(error.message);
-    res.status(500).json(SERVER_ERROR);
+    return res.status(500).json(SERVER_ERROR);
   }
 };
 
@@ -31,20 +31,18 @@ const update = async (req, res) => {
   try {
     const { id } = req.params;
     const { id: userId } = req.user;
-    const { title, content, categoryIds } = req.body;
+    const { title, content } = req.body;
 
-    if (categoryIds) return res.status(400).json({ message: 'Categories cannot be edited' });
+    const { unauthorized, message } = await BlogPostServices.update(userId, id, title, content);
 
-    const result = await BlogPostServices.update(userId, id, title, content);
+    if (unauthorized) return res.status(401).json({ message });
 
-    if (!result) return res.status(401).json({ message: 'Unauthorized user' });
+    const { result } = await BlogPostServices.getById(id);
 
-    const postUpdate = await BlogPostServices.getById(id);
-
-    return res.status(200).json(postUpdate);
+    return res.status(200).json(result);
   } catch (error) {
     console.error(error.message);
-    res.status(500).json(SERVER_ERROR);
+    return res.status(500).json(SERVER_ERROR);
   }
 };
 
@@ -59,7 +57,7 @@ const create = async (req, res) => {
     return res.status(201).json(newPost);
   } catch (error) {
     console.error(error.message);
-    res.status(500).json(SERVER_ERROR);
+    return res.status(500).json(SERVER_ERROR);
   }
 };
 
@@ -68,15 +66,15 @@ const deletePost = async (req, res) => {
     const { id } = req.params;
     const { id: userId } = req.user;
 
-    const result = await BlogPostServices.deletePost(userId, id);
+    const { postNoExist, unauthorized, message } = await BlogPostServices.deletePost(userId, id);
 
-    if (result.unauthorized) return res.status(401).json({ message: 'Unauthorized user' });
-    if (result.postNoExist) return res.status(404).json({ message: 'Post does not exist' });
+    if (postNoExist) return res.status(404).json({ message });
+    if (unauthorized) return res.status(401).json({ message });
 
     return res.status(204).end();
   } catch (error) {
     console.error(error.message);
-    res.status(500).json(SERVER_ERROR);
+    return res.status(500).json(SERVER_ERROR);
   }
 };
 
@@ -89,7 +87,7 @@ const search = async (req, res) => {
     return res.status(200).json(result);
   } catch (error) {
     console.error(error.message);
-    res.status(500).json(SERVER_ERROR);
+    return res.status(500).json(SERVER_ERROR);
   }
 };
 

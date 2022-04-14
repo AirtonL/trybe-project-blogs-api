@@ -8,16 +8,16 @@ const SECRET = process.env.JWT_SECRET;
 const login = async (req, res) => {
   try {
     const { email, password } = req.body;
-    const user = await LoginServices.login(email, password);
+    const { notExist, message } = await LoginServices.login(email, password);
 
-    if (user.notExist) return res.status(400).json({ message: 'Invalid fields' });
+    if (notExist) return res.status(400).json({ message });
 
     const token = jwt.sign({ data: email }, SECRET, jwtConfig);
 
     return res.status(200).json({ token });
-  } catch (e) {
-    console.error(e.message);
-    res.status(500).json({ message: 'Server error' });
+  } catch (error) {
+    console.error(error.message);
+    return res.status(500).json({ message: 'Server error' });
   }
 };
 

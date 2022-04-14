@@ -3,75 +3,76 @@ const { BlogPosts, User, Category } = require('../models');
 
 const getAll = async () => {
   try {
-    return await BlogPosts.findAll({
+    const result = await BlogPosts.findAll({
       include: [
-        {
-          model: User,
-          as: 'user',
-          attributes: { exclude: ['password'] },
-        },
-        {
-        model: Category,
-        as: 'categories',
-        through: { attributes: [] },
-      },
+        { model: User, as: 'user', attributes: { exclude: ['password'] } },
+        { model: Category, as: 'categories', through: { attributes: [] } },
       ],
     });
-  } catch (e) {
-    console.error(e.message);
+
+    return result;
+  } catch (error) {
+    console.error(error.message);
   }
 };
 
 const getById = async (id) => {
   try {
-    return await BlogPosts.findOne({
+    const result = await BlogPosts.findOne({
       where: { id },
       include: [
-        { model: User,
-          as: 'user',
-          attributes: { exclude: ['password'] },
-        },
-        {
-        model: Category,
-        as: 'categories',
-        through: { attributes: [] },
-      },
+        { model: User, as: 'user', attributes: { exclude: ['password'] } },
+        { model: Category, as: 'categories', through: { attributes: [] } },
       ],
     });
-  } catch (e) {
-    console.error(e.message);
+
+    if (!result) return { postNotExist: true, message: 'Post does not exist' };
+
+    return { result };
+  } catch (error) {
+    console.error(error.message);
   }
 };
 
 const update = async (userId, id, title, content) => {
-  const [resultPost] = await BlogPosts.update(
-    { title, content },
-    { where: { id, userId } },
-  );
+  try {
+    const [result] = await BlogPosts.update(
+      { title, content },
+      { where: { id, userId } },
+    );
+    
+    if (!result) return { unauthorized: true, message: 'Unauthorized user' };
 
-  return resultPost;
+    return result;
+  } catch (error) {
+    console.error(error.message);
+  }
 };
 
 const create = async (post) => {
   try {
     return await BlogPosts.create(post);
-  } catch (e) {
-    console.error(e.message);
+  } catch (error) {
+    console.error(error.message);
   }
 };
 
 const deletePost = async (userId, id) => {
-  const postExist = await getById(id);
+  try {
+    const { result } = await getById(id);
 
-  if (!postExist) return { postNoExist: true };
+    if (!result) return { postNoExist: true, message: 'Post does not exist' };
 
-  if (postExist.userId !== userId) return { unauthorized: true };
+    if (result.userId !== userId) return { unauthorized: true, message: 'Unauthorized user' };
 
-  const resultPost = await BlogPosts.destroy({
-    where: { id, userId },
-  });
+    const resultPost = await BlogPosts.destroy({
+      where: { id, userId },
+    });
 
-  return resultPost;
+    return resultPost;
+  } catch (error) {
+    console.error(error.message);
+  }
 };
 
 const search = async (q) => {
@@ -87,8 +88,8 @@ const search = async (q) => {
       },
       ],
     });
-  } catch (e) {
-    console.error(e.message);
+  } catch (error) {
+    console.error(error.message);
   }
 };
 

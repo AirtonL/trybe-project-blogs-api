@@ -18,8 +18,8 @@ const checkToken = async (req, res, next) => {
 
     req.user = user;
     next();
-  } catch (e) {
-    console.error(e.message);
+  } catch (error) {
+    console.error(error.message);
     return res.status(401).json({ message: 'Expired or invalid token' });
   }
 };
@@ -32,14 +32,19 @@ const verifyValues = async (categoryIds, ids) => Promise.all(ids)
   });
 
 const checkCategories = async (req, res, next) => {
-  const { categoryIds } = req.body;
+  try {
+    const { categoryIds } = req.body;
 
-  const ids = categoryIds.map((i) => CategoryServices.getById(i));
+    const ids = categoryIds.map((i) => CategoryServices.getById(i));
 
-  const notValueId = await verifyValues(categoryIds, ids);
-  if (notValueId) return res.status(400).json({ message: '"categoryIds" not found' });
+    const notValueId = await verifyValues(categoryIds, ids);
+    if (notValueId) return res.status(400).json({ message: '"categoryIds" not found' });
 
-  next();
+    next();
+  } catch (error) {
+    console.error(error.message);
+    return res.status(401).json({ message: 'Server Error' });
+  }
 };
 
 module.exports = {
