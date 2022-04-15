@@ -6,7 +6,7 @@ const getAll = async () => {
     const result = await BlogPosts.findAll({
       include: [
         { model: User, as: 'user', attributes: { exclude: ['password'] } },
-        { model: Category, as: 'categories', through: { attributes: [] } },
+        { model: Category, as: 'categories' },
       ],
     });
 
@@ -22,7 +22,7 @@ const getById = async (id) => {
       where: { id },
       include: [
         { model: User, as: 'user', attributes: { exclude: ['password'] } },
-        { model: Category, as: 'categories', through: { attributes: [] } },
+        { model: Category, as: 'categories' },
       ],
     });
 
@@ -84,8 +84,7 @@ const search = async (q) => {
       ] },
       include: [
         { model: User, as: 'user', attributes: { exclude: ['password'] } },
-        { model: Category, as: 'categories', through: { attributes: [] },
-      },
+        { model: Category, as: 'categories' },
       ],
     });
   } catch (error) {

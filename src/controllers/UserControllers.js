@@ -44,7 +44,8 @@ const createUser = async (req, res) => {
 
 const deleteUser = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { id } = req.user;
+    console.log(id);
 
     await UserService.deleteUser(id);
 

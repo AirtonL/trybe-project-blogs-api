@@ -11,7 +11,7 @@ const checkToken = async (req, res, next) => {
   try {
     const { data } = jwt.verify(token, SECRET);
 
-    const [user] = await User.findAll({
+    const user = await User.findOne({
       where: { email: data },
     });
     if (!user) return res.status(401).json({ message: 'Expired or invalid token' });
@@ -24,12 +24,9 @@ const checkToken = async (req, res, next) => {
   }
 };
 
-const verifyValues = async (categoryIds, ids) => Promise.all(ids)
-  .then((id) => {
-    const arr = id.map((i) => (i && i.dataValues.id));
-  
-    return !categoryIds.every((idCategory) => arr.includes(idCategory));
-  });
+const verifyValues = async (ids) => Promise.all(ids)
+  .then((id) => id.map((i) => (!!i))
+    .some((v) => v === false));
 
 const checkCategories = async (req, res, next) => {
   try {
@@ -37,7 +34,7 @@ const checkCategories = async (req, res, next) => {
 
     const ids = categoryIds.map((i) => CategoryServices.getById(i));
 
-    const notValueId = await verifyValues(categoryIds, ids);
+    const notValueId = await verifyValues(ids);
     if (notValueId) return res.status(400).json({ message: '"categoryIds" not found' });
 
     next();
